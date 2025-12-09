@@ -2,54 +2,53 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    protected $primaryKey = 'user_id';
+    public $incrementing = true;
+    protected $keyType = 'int';
+
     protected $fillable = [
-        'name',
         'email',
-        'password',
+        'password_hash',
+        'first_name',
+        'last_name',
         'phone',
-        'address',
-        'city',
-        'country',
-        'profile_picture',
-        'role_id',
-        'is_active',
-        'last_login_at',
+        'profile_image',
+        'user_type',
+        'status',
+        'last_login',
     ];
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+
     protected $hidden = [
-        'password',
+        'password_hash',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
+    protected $casts = [
+        'last_login' => 'datetime',
+    ];
+
+    // Helper methods
+    public function isAdmin()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->user_type === 'admin';
+    }
+
+    public function isOrganizer()
+    {
+        return $this->user_type === 'organizer';
+    }
+
+    public function isUser()
+    {
+        return $this->user_type === 'user';
     }
 }
