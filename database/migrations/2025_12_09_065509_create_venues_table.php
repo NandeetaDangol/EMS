@@ -13,7 +13,6 @@ return new class extends Migration
             $table->string('name');
             $table->text('address');
             $table->string('city');
-            $table->string('country');
             $table->unsignedInteger('capacity');
             $table->boolean('is_active')->default(true);
             $table->timestamps();

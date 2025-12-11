@@ -2,17 +2,17 @@
 
 namespace App\Enums;
 
-enum ApprovalStatus: string
+enum BookingStatus: string
 {
     case PENDING = 'pending';
-    case APPROVED = 'approved';
-    case REJECTED = 'rejected';
-    case SUSPENDED = 'suspended';
+    case CONFIRMED = 'confirmed';
+    case CANCELLED = 'cancelled';
+    case REFUNDED = 'refunded';
 
     public static function values(): array
     {
         return array_map(function ($case) {
             return $case->value;
-        }, ApprovalStatus::cases());
+        }, BookingStatus::cases());
     }
 }

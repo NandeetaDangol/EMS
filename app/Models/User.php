@@ -36,6 +36,31 @@ class User extends Authenticatable
         'last_login' => 'datetime',
     ];
 
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password_hash'] = bcrypt($value);
+    }
+
+    public function organizer()
+    {
+        return $this->hasOne(Organizer::class, 'user_id', 'user_id');
+    }
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'user_id', 'user_id');
+    }
+
+    public function approvedOrganizers()
+    {
+        return $this->hasMany(Organizer::class, 'approved_by', 'user_id');
+    }
+
     // Helper methods
     public function isAdmin()
     {

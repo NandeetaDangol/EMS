@@ -24,7 +24,6 @@ return new class extends Migration
             $table->enum('user_type', ['user', 'organizer', 'admin'])->default('user');
             $table->json('permissions')->nullable();
 
-            // User status
             $table->enum('status', ['active', 'suspended', 'deleted'])->default('active');
             $table->timestamp('last_login')->nullable();
 

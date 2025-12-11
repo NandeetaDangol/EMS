@@ -12,6 +12,8 @@ enum EventType: string
 
     public static function values(): array
     {
-        return array_column(EventType::cases(), 'value');
+        return array_map(function ($case) {
+            return $case->value;
+        }, EventType::cases());
     }
 }

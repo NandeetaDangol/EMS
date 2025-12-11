@@ -6,5 +6,29 @@ use Illuminate\Database\Eloquent\Model;
 
 class Venue extends Model
 {
-    //
+    protected $table = 'venues';
+    protected $primaryKey = 'venue_id';
+
+    protected $fillable = [
+        'name',
+        'address',
+        'city',
+        'capacity',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'capacity' => 'integer',
+        'is_active' => 'boolean',
+    ];
+
+    public function events()
+    {
+        return $this->hasMany(Event::class, 'venue_id', 'venue_id');
+    }
+
+    public function venueSeats()
+    {
+        return $this->hasMany(VenueSeat::class, 'venue_id', 'venue_id');
+    }
 }
