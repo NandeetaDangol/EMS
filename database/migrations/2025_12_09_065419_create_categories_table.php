@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
 
-            $table->bigIncrements('category_id');
+            $table->id();
             $table->string('name', 255)->unique();
             $table->text('description')->nullable();
             $table->string('icon', 255)->nullable();

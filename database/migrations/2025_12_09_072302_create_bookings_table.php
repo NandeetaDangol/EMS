@@ -10,13 +10,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('bookings', function (Blueprint $table) {
-            $table->bigIncrements('booking_id');
+            $table->id();
 
             // Foreign Keys
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('event_id');
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
 
-            $table->string('booking_reference', 255)->unique();
+            $table->foreignId('event_id')
+                ->constrained('events')
+                ->cascadeOnDelete();
+
+            $table->string('booking_reference')->unique();
             $table->unsignedInteger('total_tickets');
             $table->decimal('subtotal', 10, 2);
             $table->decimal('total_amount', 10, 2);
@@ -25,18 +30,7 @@ return new class extends Migration
                 ->default(BookingStatus::PENDING->value);
 
             $table->timestamp('booking_date')->useCurrent();
-            $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
-
-            // Foreign key constraints
-            $table->foreign('user_id')
-                ->references('user_id')
-                ->on('users')
-                ->onDelete('cascade');
-
-            $table->foreign('event_id')
-                ->references('event_id')
-                ->on('events')
-                ->onDelete('restrict');
+            $table->timestamps();
         });
     }
 

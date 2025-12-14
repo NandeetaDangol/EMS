@@ -10,13 +10,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('booking_tickets', function (Blueprint $table) {
-            $table->bigIncrements('booking_ticket_id');
-
-            // Foreign Keys
-            $table->unsignedBigInteger('booking_id');
-            $table->unsignedBigInteger('ticket_id');
-            $table->unsignedBigInteger('seat_id')->nullable();
-
+            $table->id();
             $table->string('attendee_name', 255);
             $table->string('attendee_email', 255);
             $table->string('attendee_phone', 20)->nullable();
@@ -27,21 +21,19 @@ return new class extends Migration
 
             $table->timestamps();
 
-            // Foreign key constraints
-            $table->foreign('booking_id')
-                ->references('booking_id')
-                ->on('bookings')
-                ->onDelete('cascade');
+            // Foreign Keys
+            $table->foreignId('booking_id')
+                ->constrained('bookings')
+                ->cascadeOnDelete();
 
-            $table->foreign('ticket_id')
-                ->references('ticket_id')
-                ->on('event_tickets')
-                ->onDelete('restrict');
+            $table->foreignId('ticket_id')
+                ->constrained('event_tickets')
+                ->restrictOnDelete();
 
-            $table->foreign('seat_id')
-                ->references('seat_id')
-                ->on('venue_seats')
-                ->onDelete('set null');
+            $table->foreignId('seat_id')
+                ->nullable()
+                ->constrained('venue_seats')
+                ->nullOnDelete();
         });
     }
 

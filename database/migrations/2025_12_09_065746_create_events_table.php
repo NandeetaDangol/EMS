@@ -10,12 +10,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->bigIncrements('event_id');
-
-            // Foreign Keys
-            $table->unsignedBigInteger('organizer_id');
-            $table->unsignedBigInteger('category_id');
-            $table->unsignedBigInteger('venue_id');
+            $table->id(); // primary key
 
             // Event Info
             $table->string('title');
@@ -24,6 +19,12 @@ return new class extends Migration
             $table->dateTime('end_datetime');
             $table->dateTime('booking_start');
             $table->dateTime('booking_end');
+            $table->string('banner_image')->nullable();
+
+            // Custom Fields
+            $table->json('custom_fields')->nullable();
+
+            $table->timestamps();
 
             $table->enum('event_type', [
                 'concert',
@@ -33,31 +34,21 @@ return new class extends Migration
                 'other'
             ])->default('other');
 
+            // Foreign Keys
+            $table->foreignId('organizer_id')
+                ->constrained('organizers')
+                ->restrictOnDelete();
+
+            $table->foreignId('category_id')
+                ->constrained('categories')
+                ->restrictOnDelete();
+
+             $table->foreignId('venue_id')
+                ->constrained('venues')
+                ->restrictOnDelete();
+
             $table->enum('status', EventStatus::values())
                 ->default(EventStatus::DRAFT->value);
-
-            $table->string('banner_image')->nullable();
-
-            // Custom Fields
-            $table->json('custom_fields')->nullable();
-
-            $table->timestamps();
-
-            // Foreign key 
-            $table->foreign('organizer_id')
-                ->references('organizer_id')
-                ->on('organizers')
-                ->onDelete('restrict');
-
-            $table->foreign('category_id')
-                ->references('category_id')
-                ->on('categories')
-                ->onDelete('restrict');
-
-            $table->foreign('venue_id')
-                ->references('venue_id')
-                ->on('venues')
-                ->onDelete('restrict');
         });
     }
 

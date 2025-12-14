@@ -9,18 +9,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('event_media', function (Blueprint $table) {
-            $table->bigIncrements('media_id');
-
-            $table->unsignedBigInteger('event_id');
-
+            $table->id();
             $table->string('file_url', 255);
             $table->timestamp('uploaded_at')->useCurrent();
 
-            // Foreign key 
-            $table->foreign('event_id')
-                ->references('event_id')
-                ->on('events')
-                ->onDelete('cascade');
+            $table->foreignId('event_id')->constrained('events')->cascadeOnDelete();
         });
     }
 

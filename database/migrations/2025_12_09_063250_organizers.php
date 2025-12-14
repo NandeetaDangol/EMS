@@ -9,21 +9,32 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('organizers', function (Blueprint $table) {
-            $table->bigIncrements('organizer_id');
+            $table->id(); 
 
-            $table->unsignedBigInteger('user_id');
+            // Link to users table
+            $table->foreignId('user_id')
+                ->constrained('users')
+                ->cascadeOnDelete();
+
             $table->string('organization_name', 255);
             $table->text('description')->nullable();
-            $table->enum('approval_status', ['pending', 'approved', 'rejected', 'suspended'])->default('pending');
 
-            $table->unsignedBigInteger('approved_by')->nullable();
+            $table->enum('approval_status', [
+                'pending',
+                'approved',
+                'rejected',
+                'suspended'
+            ])->default('pending');
+
+            // Admin who approved the organizer
+            $table->foreignId('approved_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+
             $table->timestamp('approved_at')->nullable();
 
             $table->timestamps();
-
-            // Foreign Keys
-            $table->foreign('user_id')->references('user_id')->on('users')->onDelete('cascade');
-            $table->foreign('approved_by')->references('user_id')->on('users')->onDelete('set null');
         });
     }
 

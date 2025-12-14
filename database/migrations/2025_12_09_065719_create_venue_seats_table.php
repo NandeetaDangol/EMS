@@ -9,10 +9,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('venue_seats', function (Blueprint $table) {
-            $table->bigIncrements('seat_id');
+            $table->id();
 
             // Foreign Key - venue reference
-            $table->unsignedBigInteger('venue_id');
             $table->string('section', 50);
             $table->string('row', 20);
             $table->string('seat_number', 10);
@@ -21,11 +20,10 @@ return new class extends Migration
                 ->default('regular');
             $table->timestamps();
 
-            // Foreign key constraint
-            $table->foreign('venue_id')
-                ->references('venue_id')
-                ->on('venues')
-                ->onDelete('cascade');
+            // Foreign Key - venue reference
+            $table->foreignId('venue_id')
+                ->constrained('venues')
+                ->cascadeOnDelete();
 
             $table->unique(['venue_id', 'section', 'row', 'seat_number'], 'unique_seat');
         });
