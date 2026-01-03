@@ -32,13 +32,11 @@ class BookingTicket extends Model
 
     public function ticket()
     {
-        // Fixed: remove second parameter (ticket_id)
         return $this->belongsTo(EventTicket::class, 'ticket_id');
     }
 
     public function seat()
     {
-        // Fixed: remove second parameter (seat_id)
         return $this->belongsTo(VenueSeat::class, 'seat_id');
     }
 }

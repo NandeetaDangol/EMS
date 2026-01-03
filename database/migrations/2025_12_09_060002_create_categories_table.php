@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('categories', function (Blueprint $table) {
-            $table->id(); // Creates 'id' column, not 'category_id'
+            $table->id();
             $table->string('name', 255)->unique();
             $table->text('description')->nullable();
             $table->string('icon', 255)->nullable();
