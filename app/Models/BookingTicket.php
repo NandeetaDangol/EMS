@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class BookingTicket extends Model
 {
     protected $table = 'booking_tickets';
-    protected $primaryKey = 'booking_ticket_id';
 
     protected $fillable = [
         'booking_id',
@@ -26,19 +25,20 @@ class BookingTicket extends Model
         'unit_price' => 'decimal:2',
     ];
 
-    // Relationships
     public function booking()
     {
-        return $this->belongsTo(Booking::class, 'booking_id', 'booking_id');
+        return $this->belongsTo(Booking::class, 'booking_id');
     }
 
     public function ticket()
     {
-        return $this->belongsTo(EventTicket::class, 'ticket_id', 'ticket_id');
+        // Fixed: remove second parameter (ticket_id)
+        return $this->belongsTo(EventTicket::class, 'ticket_id');
     }
 
     public function seat()
     {
-        return $this->belongsTo(VenueSeat::class, 'seat_id', 'seat_id');
+        // Fixed: remove second parameter (seat_id)
+        return $this->belongsTo(VenueSeat::class, 'seat_id');
     }
 }

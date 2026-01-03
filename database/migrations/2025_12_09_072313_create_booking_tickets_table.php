@@ -15,7 +15,6 @@ return new class extends Migration
             $table->string('attendee_email', 255);
             $table->string('attendee_phone', 20)->nullable();
             $table->decimal('unit_price', 10, 2);
-
             $table->enum('status', BookingTicketStatus::values())
                 ->default(BookingTicketStatus::ACTIVE->value);
 

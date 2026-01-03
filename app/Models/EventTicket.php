@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Event;
 
 class EventTicket extends Model
 {
     protected $table = 'event_tickets';
-    protected $primaryKey = 'ticket_id';
 
     protected $fillable = [
         'event_id',
@@ -26,17 +26,16 @@ class EventTicket extends Model
         'quantity_sold' => 'integer',
         'quantity_available' => 'integer',
         'is_active' => 'boolean',
-        'sale_end' => 'datetime',
+        'sale_end' => 'datetime'
     ];
 
-    // Relationships
     public function event()
     {
-        return $this->belongsTo(Event::class, 'event_id', 'event_id');
+        return $this->belongsTo(Event::class, 'event_id');
     }
 
     public function bookingTickets()
     {
-        return $this->hasMany(BookingTicket::class, 'ticket_id', 'ticket_id');
+        return $this->hasMany(BookingTicket::class, 'ticket_id');
     }
 }

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     protected $table = 'events';
-    protected $primaryKey = 'event_id';
 
     protected $fillable = [
         'organizer_id',
@@ -35,34 +34,33 @@ class Event extends Model
         'custom_fields' => 'array',
     ];
 
-    // Relationships
     public function organizer()
     {
-        return $this->belongsTo(Organizer::class, 'organizer_id', 'organizer_id');
+        return $this->belongsTo(Organizer::class, 'organizer_id');
     }
 
     public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id', 'category_id');
+        return $this->belongsTo(Category::class, 'category_id');
     }
 
     public function venue()
     {
-        return $this->belongsTo(Venue::class, 'venue_id', 'venue_id');
+        return $this->belongsTo(Venue::class, 'venue_id');
     }
 
     public function eventMedia()
     {
-        return $this->hasMany(EventMedia::class, 'event_id', 'event_id');
+        return $this->hasMany(EventMedia::class, 'event_id');
     }
 
     public function eventTickets()
     {
-        return $this->hasMany(EventTicket::class, 'event_id', 'event_id');
+        return $this->hasMany(EventTicket::class, 'event_id');
     }
 
     public function bookings()
     {
-        return $this->hasMany(Booking::class, 'event_id', 'event_id');
+        return $this->hasMany(Booking::class, 'event_id');
     }
 }

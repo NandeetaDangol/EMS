@@ -10,7 +10,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('events', function (Blueprint $table) {
-            $table->id(); // primary key
+            $table->id(); 
 
             // Event Info
             $table->string('title');

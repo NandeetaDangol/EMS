@@ -20,7 +20,6 @@ return new class extends Migration
                 ->default('regular');
             $table->timestamps();
 
-            // Foreign Key - venue reference
             $table->foreignId('venue_id')
                 ->constrained('venues')
                 ->cascadeOnDelete();

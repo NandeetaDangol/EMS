@@ -10,10 +10,9 @@ return new class extends Migration
     {
         Schema::create('event_media', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('event_id')->constrained('events')->cascadeOnDelete();
             $table->string('file_url', 255);
             $table->timestamp('uploaded_at')->useCurrent();
-
-            $table->foreignId('event_id')->constrained('events')->cascadeOnDelete();
         });
     }
 

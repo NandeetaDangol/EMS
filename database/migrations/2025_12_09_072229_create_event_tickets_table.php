@@ -13,7 +13,7 @@ return new class extends Migration
 
             // Foreign key (event → events.id)
             $table->foreignId('event_id')
-                ->constrained('events') // references events.id
+                ->constrained('events') 
                 ->cascadeOnDelete();
 
             // Ticket info
@@ -25,12 +25,8 @@ return new class extends Migration
             $table->unsignedInteger('quantity_sold')->default(0);
             $table->unsignedInteger('quantity_available');
 
-            // Ticket status
             $table->boolean('is_active')->default(true);
-
-            // Optional
             $table->dateTime('sale_end')->nullable();
-
             $table->timestamps();
         });
     }

@@ -32,6 +32,8 @@ class User extends Authenticatable
     protected $casts = [
         'password'   => 'hashed',
         'last_login' => 'datetime',
+        'status' => 'string', // Optional but recommended
+        'permissions' => 'array',
     ];
 
     public function organizer()

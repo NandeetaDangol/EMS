@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,29 +11,38 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        // Seed admin user
+        $this->command->info('Starting database seeding');
+        $this->command->newLine();
+
         $this->call([
             AdminSeeder::class,
+            CategorySeeder::class,
+            VenueSeeder::class,
+            VenueSeatSeeder::class,
+            OrganizerSeeder::class,
+            EventSeeder::class,
+            EventMediaSeeder::class,
+            EventTicketSeeder::class,
+            BookingSeeder::class,
+            BookingTicketSeeder::class,
         ]);
 
-        // Create test user
-        User::factory()->create([
-            'first_name' => 'Test',
-            'last_name' => 'User',
-            'email' => 'test@example.com',
-            'password' => bcrypt('password'),
-            'user_type' => 'user',
-            'status' => 'active',
-        ]);
+        $this->command->newLine();
+        $this->command->info('Database seeding completed successfully!');
+        $this->command->newLine();
 
-        // Create test organizer 
-        User::factory()->create([
-            'first_name' => 'Event',
-            'last_name' => 'Organizer',
-            'email' => 'organizer@example.com',
-            'password' => bcrypt('password'),
-            'user_type' => 'organizer',
-            'status' => 'active',
-        ]);
+        // Display login credentials
+        $this->command->info('Login Credentials:');
+        $this->command->table(
+            ['Role', 'Email', 'Password'],
+            [
+                ['Admin', 'admin@event.com', 'password123'],
+                ['Organizer 1', 'organizer1@event.com', 'password123'],
+                ['Organizer 2', 'organizer2@event.com', 'password123'],
+                ['Organizer 3', 'organizer3@event.com', 'password123'],
+                ['Organizer 4', 'organizer4@event.com', 'password123'],
+                ['Test User', 'test@example.com', 'password123'],
+            ]
+        );
     }
 }

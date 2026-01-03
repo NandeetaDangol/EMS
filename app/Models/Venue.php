@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Venue extends Model
 {
     protected $table = 'venues';
-    protected $primaryKey = 'venue_id';
 
     protected $fillable = [
         'name',
@@ -24,11 +23,11 @@ class Venue extends Model
 
     public function events()
     {
-        return $this->hasMany(Event::class, 'venue_id', 'venue_id');
+        return $this->hasMany(Event::class, 'venue_id');
     }
 
     public function venueSeats()
     {
-        return $this->hasMany(VenueSeat::class, 'venue_id', 'venue_id');
+        return $this->hasMany(VenueSeat::class, 'venue_id');
     }
 }

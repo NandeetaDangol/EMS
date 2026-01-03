@@ -26,7 +26,6 @@ class EventController extends Controller
             'end_datetime' => $request->end_datetime,
             'event_type' => $request->event_type,
         ]);
-
         return response()->json($event, 201);
     }
 

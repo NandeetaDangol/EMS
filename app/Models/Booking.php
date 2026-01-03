@@ -8,9 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Booking extends Model
 {
     protected $table = 'bookings';
-    protected $primaryKey = 'booking_id';
-
-    public $timestamps = false;
 
     protected $fillable = [
         'user_id',
@@ -20,27 +17,26 @@ class Booking extends Model
         'subtotal',
         'total_amount',
         'status',
+        'booking_date',
     ];
 
     protected $casts = [
         'status' => BookingStatus::class,
         'booking_date' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
-    // Relationships
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'user_id');
+        return $this->belongsTo(User::class);
     }
 
     public function event()
     {
-        return $this->belongsTo(Event::class, 'event_id', 'event_id');
+        return $this->belongsTo(Event::class);
     }
 
     public function bookingTickets()
     {
-        return $this->hasMany(BookingTicket::class, 'booking_id', 'booking_id');
+        return $this->hasMany(BookingTicket::class, 'booking_id');
     }
 }

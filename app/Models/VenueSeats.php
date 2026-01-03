@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class VenueSeat extends Model
 {
     protected $table = 'venue_seats';
-    protected $primaryKey = 'seat_id';
+    // Remove: protected $primaryKey = 'seat_id';
 
     protected $fillable = [
         'venue_id',
@@ -24,11 +24,11 @@ class VenueSeat extends Model
 
     public function venue()
     {
-        return $this->belongsTo(Venue::class, 'venue_id', 'venue_id');
+        return $this->belongsTo(Venue::class, 'venue_id');
     }
 
     public function bookingTickets()
     {
-        return $this->hasMany(BookingTicket::class, 'seat_id', 'seat_id');
+        return $this->hasMany(BookingTicket::class, 'seat_id');
     }
 }
