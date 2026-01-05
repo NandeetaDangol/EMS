@@ -38,7 +38,6 @@ class AuthController extends Controller
                 'status' => 'active',
             ]);
 
-            // Create Organizer record if user_type is organizer
             if ($user->user_type === 'organizer') {
                 Organizer::create([
                     'user_id' => $user->id,
@@ -46,7 +45,6 @@ class AuthController extends Controller
                     'description' => $validated['organization_description'] ?? null,
                     'approval_status' => 'pending',
                 ]);
-
                 $user->load('organizer');
             }
 
@@ -67,7 +65,6 @@ class AuthController extends Controller
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
-
             return response()->json([
                 'success' => false,
                 'message' => 'Registration failed',
@@ -100,13 +97,12 @@ class AuthController extends Controller
 
         $user->update(['last_login' => now()]);
 
-        // Load organizer relationship
         if ($user->user_type === 'organizer') {
             $user->load('organizer');
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
-        
+
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
@@ -121,25 +117,15 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Logged out successfully'
-        ]);
+        return response()->json(['success' => true, 'message' => 'Logged out successfully']);
     }
 
     public function me(Request $request)
     {
         $user = $request->user();
-
-        // Load organizer relationship
         if ($user->user_type === 'organizer') {
             $user->load('organizer');
         }
-
-        return response()->json([
-            'success' => true,
-            'data' => $user
-        ]);
+        return response()->json(['success' => true, 'data' => $user]);
     }
 }
