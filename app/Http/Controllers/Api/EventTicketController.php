@@ -11,40 +11,26 @@ class EventTicketController extends Controller
     {
         $query = EventTicket::with('event');
 
-        // Filter by event if provided
         if ($request->has('event_id')) {
             $query->where('event_id', $request->event_id);
         }
 
-        // Filter by active status
         if ($request->has('is_active')) {
             $query->where('is_active', $request->boolean('is_active'));
         }
 
-        // Filter by availability
-        if ($request->has('available_only') && $request->boolean('available_only')) {
-            $query->where('quantity_available', '>', 0)
-                ->where('is_active', true);
+        if ($request->boolean('available_only')) {
+            $query->where('quantity_available', '>', 0)->where('is_active', true);
         }
 
-        $tickets = $query->paginate(15);
-
-        return response()->json($tickets);
+        return response()->json($query->paginate(15));
     }
 
-    /**
-     * Display the specified event ticket
-     */
     public function show($id)
     {
-        $ticket = EventTicket::with('event')->findOrFail($id);
-
-        return response()->json($ticket);
+        return response()->json(EventTicket::with('event')->findOrFail($id));
     }
 
-    /**
-     * Store a newly created event ticket
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -58,34 +44,18 @@ class EventTicketController extends Controller
             'sale_end' => 'nullable|date|after:now',
         ]);
 
-        // Calculate quantity_available if not provided
-        if (!isset($validated['quantity_available'])) {
-            $validated['quantity_available'] = $validated['quantity_total'] - ($validated['quantity_sold'] ?? 0);
-        }
+        $validated['quantity_sold'] = $validated['quantity_sold'] ?? 0;
+        $validated['quantity_available'] = $validated['quantity_available'] ?? ($validated['quantity_total'] - $validated['quantity_sold']);
 
-        // Ensure quantity_sold is set
-        if (!isset($validated['quantity_sold'])) {
-            $validated['quantity_sold'] = 0;
-        }
-
-        // Validate quantities match
         if ($validated['quantity_sold'] + $validated['quantity_available'] != $validated['quantity_total']) {
-            return response()->json([
-                'message' => 'Quantity mismatch: sold + available must equal total'
-            ], 422);
+            return response()->json(['message' => 'Quantity mismatch'], 422);
         }
 
         $ticket = EventTicket::create($validated);
 
-        return response()->json([
-            'message' => 'Event ticket created successfully',
-            'ticket' => $ticket->load('event')
-        ], 201);
+        return response()->json(['message' => 'Ticket created', 'ticket' => $ticket->load('event')], 201);
     }
 
-    /**
-     * Update the specified event ticket
-     */
     public function update(Request $request, $id)
     {
         $ticket = EventTicket::findOrFail($id);
@@ -101,40 +71,29 @@ class EventTicketController extends Controller
             'sale_end' => 'nullable|date',
         ]);
 
-        // If updating quantities, validate they match
-        $quantityTotal = $validated['quantity_total'] ?? $ticket->quantity_total;
-        $quantitySold = $validated['quantity_sold'] ?? $ticket->quantity_sold;
-        $quantityAvailable = $validated['quantity_available'] ?? $ticket->quantity_available;
+        $total = $validated['quantity_total'] ?? $ticket->quantity_total;
+        $sold = $validated['quantity_sold'] ?? $ticket->quantity_sold;
+        $available = $validated['quantity_available'] ?? $ticket->quantity_available;
 
-        if ($quantitySold + $quantityAvailable != $quantityTotal) {
-            return response()->json([
-                'message' => 'Quantity mismatch: sold + available must equal total'
-            ], 422);
+        if ($sold + $available != $total) {
+            return response()->json(['message' => 'Quantity mismatch'], 422);
         }
 
         $ticket->update($validated);
 
-        return response()->json([
-            'message' => 'Event ticket updated successfully',
-            'ticket' => $ticket->fresh('event')
-        ]);
+        return response()->json(['message' => 'Ticket updated', 'ticket' => $ticket->fresh('event')]);
     }
 
     public function destroy($id)
     {
         $ticket = EventTicket::findOrFail($id);
 
-        // Check if tickets have been sold
         if ($ticket->quantity_sold > 0) {
-            return response()->json([
-                'message' => 'Cannot delete ticket with existing sales'
-            ], 422);
+            return response()->json(['message' => 'Cannot delete ticket with sales'], 422);
         }
 
         $ticket->delete();
 
-        return response()->json([
-            'message' => 'Event ticket deleted successfully'
-        ]);
+        return response()->json(['message' => 'Ticket deleted']);
     }
 }
