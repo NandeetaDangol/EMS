@@ -61,27 +61,26 @@ class EventTicketController extends Controller
         $ticket = EventTicket::findOrFail($id);
 
         $validated = $request->validate([
-            'event_id' => 'sometimes|exists:events,id',
             'ticket_type' => 'sometimes|string|max:255',
             'price' => 'sometimes|numeric|min:0',
             'quantity_total' => 'sometimes|integer|min:1',
-            'quantity_sold' => 'sometimes|integer|min:0',
-            'quantity_available' => 'sometimes|integer|min:0',
-            'is_active' => 'boolean',
+            'is_active' => 'sometimes|boolean',
             'sale_end' => 'nullable|date',
         ]);
 
-        $total = $validated['quantity_total'] ?? $ticket->quantity_total;
-        $sold = $validated['quantity_sold'] ?? $ticket->quantity_sold;
-        $available = $validated['quantity_available'] ?? $ticket->quantity_available;
-
-        if ($sold + $available != $total) {
-            return response()->json(['message' => 'Quantity mismatch'], 422);
+        // Adjust available quantity if total changes
+        if (isset($validated['quantity_total'])) {
+            $difference = $validated['quantity_total'] - $ticket->quantity_total;
+            $validated['quantity_available'] = $ticket->quantity_available + $difference;
         }
 
         $ticket->update($validated);
 
-        return response()->json(['message' => 'Ticket updated', 'ticket' => $ticket->fresh('event')]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Ticket updated successfully',
+            'data' => $ticket->fresh('event')
+        ]);
     }
 
     public function destroy($id)
