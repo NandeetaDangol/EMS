@@ -40,7 +40,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{id}', [EventController::class, 'update']);
         Route::patch('/{id}/status', [EventController::class, 'updateStatus']);
         Route::delete('/{id}', [EventController::class, 'destroy']);
-        // Route::get('/{id}/statistics', [EventController::class, 'statistics']);
+        Route::get('/{id}/statistics', [EventController::class, 'statistics']);
     });
 
     // Event media
